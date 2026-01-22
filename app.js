@@ -4,9 +4,6 @@ require('dotenv').config();
 const { MongoClient, ObjectId } = require('mongodb');
 const express = require('express');
 
-const { MongoClient, ObjectId } = require('mongodb');
-const express = require('express');
-
 
 const app = express();
 const port = process.env.PORT || 3000; 
@@ -40,14 +37,6 @@ app.get('/', (req, res) => {
   `);
 });
 
-app.get('/api/products', async (req, res) => {
-  const products = await productsCollection.find().toArray();
-
-  res.json({
-    count: products.length,
-    products: products
-  });
-});
 // 10 task
 app.get('/api/products', async (req, res) => {
   try {
