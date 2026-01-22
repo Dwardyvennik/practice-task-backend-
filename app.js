@@ -1,9 +1,15 @@
+// 11 task
+require('dotenv').config();
+
+const { MongoClient, ObjectId } = require('mongodb');
+const express = require('express');
+
 const { MongoClient, ObjectId } = require('mongodb');
 const express = require('express');
 
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000; 
 //midlewares
 app.use(express.json());
 app.use((req, res, next) => {
@@ -11,7 +17,8 @@ app.use((req, res, next) => {
   next();
 });
 
-const uri = 'mongodb+srv://ali_mongodb_user:Dwardy2025@clusterali.mfgylbx.mongodb.net/';
+
+const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri);
 let productsCollection;
 
@@ -21,7 +28,6 @@ async function connectToDatabase() {
     productsCollection = database.collection('products');
     console.log('Connected to MongoDB');
 }
-connectToDatabase().catch(console.error);
 
 //routes
 app.get('/', (req, res) => {
@@ -95,6 +101,14 @@ app.post('/api/products', async (req, res) => {
 app.use((req, res) => {
   res.status(404).json({ error: 'API endpoint not found' });
 });
-app.listen(port, () => {
-  console.log(` http://localhost:${port}`);
-});
+async function startServer() {
+  try {
+    await connectToDatabase();
+    app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+    });
+  } catch (error) {
+    console.error('Failed to start server', error);
+  }
+}
+startServer();
